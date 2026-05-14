@@ -163,6 +163,16 @@ export const useApp = create<AppState>()(
       dismissSuggestion: (id) =>
         set((s) => ({ dismissedSuggestionIds: [...s.dismissedSuggestionIds, id] })),
     }),
-    { name: "lifeops-store" }
+    {
+      name: "lifeops-store",
+      // Only persist memory + dismissedSuggestionIds across reloads.
+      // Calendar always re-seeds from `DEFAULT_CALENDAR` so demo dates stay
+      // current as time passes; plans are session-scoped and don't need to
+      // survive a hard reload.
+      partialize: (state) => ({
+        memory: state.memory,
+        dismissedSuggestionIds: state.dismissedSuggestionIds,
+      }),
+    }
   )
 );
